@@ -14,12 +14,11 @@ api/
 ```
 
 ## Запуск
-```bash
-pytest -q api/tests --alluredir=allure-results
-```
+Запуск тестов осуществляется джобой в jenkins
+https://jenkins.autotests.cloud/job/AnnaKharina1998-QAguru-20-diploma-api/
 
 ## Переменные окружения
-Для авторизационных тестов нужны логин и пароль в `.env`:
+Для авторизационных тестов при локальном запуске нужны логин и пароль в `.env`:
 ```
 OFF_USER=your_login
 OFF_PASSWORD=your_password

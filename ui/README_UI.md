@@ -18,18 +18,17 @@ ui/
 ```
 
 ## Запуск
-```bash
-pytest -q ui/tests --alluredir=allure-results
-```
 
-## Переменные окружения
-Для запуска тестов через селеноид нужны логин, пароль и url от него в `.env`:
+Запуск тестов осуществляется джобой в jenkins
+https://jenkins.autotests.cloud/job/AnnaKharina1998-QAguru-20-diploma-UI/
+
+Для локального запуска тестов через селеноид нужны логин, пароль и url от него в `.env`:
 ```
 S_LOGIN=your_login
 S_PASSWORD=your_password
 S_URL=selenoid_url
 ```
-Для локального запуска тестов измените фикстуру на:
+Для локального запуска тестов в браузере измените фикстуру на:
 ```
 import pytest
 from selene import browser
