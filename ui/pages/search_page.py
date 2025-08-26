@@ -2,8 +2,11 @@ from selene import browser, have
 import allure
 
 class SearchPage:
-    def open(self):
-        browser.open('/')
+
+
+    def open_results(self, query: str):
+        with allure.step(f'Открыть страницу поиска по запросу "{query}"'):
+            browser.open(f'/cgi/search.pl?search_terms={query}&search_simple=1&action=process')
         return self
 
     def search(self, query: str):
@@ -18,3 +21,8 @@ class SearchPage:
     def should_have_product_links(self):
         with allure.step(f'Проверка ненулевого количества ссылок в результатах поиска'):
             browser.all('a[href*="/product/"]').should(have.size_greater_than(0))
+
+    def open(self):
+        with allure.step('Открыть главную страницу'):
+            browser.open('/')
+        return self
