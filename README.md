@@ -76,13 +76,19 @@ openfoodfacts-diploma/
 OFF_USER=your_login
 OFF_PASSWORD=your_password
 ```
+## Ручные тесты
+Ручные тест-кейсы добавлены в проект в allure
+https://allure.autotests.cloud/project/4895/dashboards
 
 ---
 
 ## ⚙️ CI/CD
-- Jenkins pipelines  
+- Jenkins pipelines 
+https://jenkins.autotests.cloud/job/AnnaKharina1998-QAguru-20-diploma-UI/
+https://jenkins.autotests.cloud/job/AnnaKharina1998-QAguru-20-diploma-api/
 - Allure reports  
 - Telegram notifications  
+Уведомления приходят в чат https://t.me/krasnokutakaia_bot_notifications
 
 ---
 
@@ -92,13 +98,9 @@ OFF_PASSWORD=your_password
 - Requests  
 - Allure  
 - Jenkins  
-- GitHub Actions (опционально)  
-- Docker  
+  
 
 ---
 
 ## ⭐ Особенности
-- UI тесты в стиле **PageObject** + `allure.step`  
-- API тесты с шагами и severity  
-- `verify=False` в API-запросах (допустимо для диплома)  
 - Авторизационные тесты пропускаются, если нет переменных окружения  
