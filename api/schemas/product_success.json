@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "status": {
+      "type": "integer",
+      "enum": [
+        1
+      ]
+    },
+    "status_verbose": {
+      "type": "string"
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "product_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "_keywords": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": []
+    }
+  },
+  "required": [
+    "code",
+    "status",
+    "product"
+  ]
+}

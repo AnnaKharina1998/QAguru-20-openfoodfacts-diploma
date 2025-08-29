@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "status": {
+      "type": "integer",
+      "enum": [
+        0
+      ]
+    },
+    "status_verbose": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "product": {
+      "type": [
+        "null",
+        "object"
+      ]
+    }
+  },
+  "required": [
+    "code",
+    "status"
+  ]
+}

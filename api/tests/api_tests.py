@@ -3,6 +3,8 @@ import requests
 import pytest
 import allure
 from dotenv import load_dotenv
+import json
+from jsonschema import validate
 
 load_dotenv()
 BASE = "https://world.openfoodfacts.org"
@@ -124,3 +126,71 @@ def test_add_comment_wrong_password():
     with allure.step('Проверить, что сервер вернул ошибку'):
         assert r.status_code in (401, 403)
         assert ("invalid" in r.text.lower()) or ("error" in r.text.lower())
+
+
+SCHEMAS_DIR = os.path.join(os.path.dirname(__file__), "..", "schemas")
+
+def load_schema(name: str) -> dict:
+    with open(os.path.join(SCHEMAS_DIR, name), "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@allure.feature("API")
+@allure.story("GET /api/v2/product/{barcode}")
+@allure.title("JSONSchema: успешный ответ при валидном штрих-коде")
+@allure.severity(allure.severity_level.CRITICAL)
+def test_schema_product_success():
+    with allure.step(f"GET /api/v2/product/{BARCODE_OK}"):
+        r = requests.get(f"{BASE}/api/v2/product/{BARCODE_OK}", timeout=10, verify=False)
+        data = r.json()
+    with allure.step("Валидация по схеме product_success.json"):
+        validate(instance=data, schema=load_schema("product_success.json"))
+
+
+@allure.feature("API")
+@allure.story("GET /api/v2/product/{barcode}")
+@allure.title("JSONSchema: невалидный штрих-код (status=0)")
+@allure.severity(allure.severity_level.CRITICAL)
+def test_schema_product_not_found():
+    with allure.step(f"GET /api/v2/product/{BAD_BARCODE}"):
+        r = requests.get(f"{BASE}/api/v2/product/{BAD_BARCODE}", timeout=10, verify=False)
+        data = r.json()
+    with allure.step("Валидация по схеме product_not_found.json"):
+        validate(instance=data, schema=load_schema("product_not_found.json"))
+
+
+@allure.feature("API")
+@allure.story("GET /cgi/search.pl")
+@allure.title("JSONSchema: поисковая выдача содержит продукты")
+@allure.severity(allure.severity_level.NORMAL)
+def test_schema_search_results():
+    with allure.step("GET /cgi/search.pl?search_terms=noodle&json=1"):
+        r = requests.get(
+            f"{BASE}/cgi/search.pl",
+            params={"search_terms": "noodle", "search_simple": 1, "action": "process", "json": 1},
+            timeout=15, verify=False,
+        )
+        data = r.json()
+    with allure.step("Валидация по схеме search_results.json"):
+        validate(instance=data, schema=load_schema("search_results.json"))
+
+
+@allure.feature("API")
+@allure.story("POST /cgi/product_jqm2.pl")
+@allure.title("JSONSchema: тело POST-комментария валидно (перед отправкой)")
+@allure.severity(allure.severity_level.CRITICAL)
+@pytest.mark.skipif(not has_creds, reason="need OFF_USER and OFF_PASSWORD")
+def test_schema_add_comment_request_before_send():
+    body = {
+        "code": BARCODE_WRITE,
+        "comment": "automated test via jsonschema",
+        "user_id": user_id,
+        "password": password,
+        "action": "edit",
+    }
+    with allure.step("Валидация payload по схеме add_comment_request.json"):
+        validate(instance=body, schema=load_schema("add_comment_request.json"))
+    with allure.step("POST запрос с валидным телом"):
+        r = requests.post(f"{BASE}/cgi/product_jqm2.pl", data=body, timeout=15, verify=False)
+    with allure.step("Проверка успешного ответа"):
+        assert r.status_code == 200
+        assert "invalid" not in r.text.lower()
