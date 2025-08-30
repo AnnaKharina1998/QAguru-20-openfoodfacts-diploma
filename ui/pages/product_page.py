@@ -41,3 +41,21 @@ class ProductPage:
         with allure.step(f'Проверка наличия на странице текста "{text}"'):
             browser.element('body').should(have.text(text))
         return self
+
+    def open_edit_page(self):
+        with allure.step("Открыть страницу редактирования товара"):
+            browser.element('a[href*="/cgi/product.pl?type=edit&code=0737628064502"]').click()
+        return self
+
+    def should_have_comment(self, text: str):
+        with allure.step(f'Проверка, что комментарий \"{text}\" отображается на странице'):
+            browser.element('body').should(have.text(text))
+        return self
+
+    def login(self, user: str, password: str):
+        with allure.step("Залогиниться в OpenFoodFacts"):
+            browser.open("/cgi/login.pl")
+            browser.element('input[name="user_id"]').type(user)
+            browser.element('input[name="password"]').type(password)
+            browser.element('input[type="submit"]').click()
+        return self
